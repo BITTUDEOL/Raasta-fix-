@@ -57,8 +57,9 @@ export class ChatbotAI {
       category = 'thanks';
     }
 
+    let fallback = "I'm here to help! Please describe your issue—for example: 'How do I file a report?', 'Why isn't the map showing?', 'How to get live location?'";
     const responses = englishResponses[category];
-    response = responses[Math.floor(Math.random() * responses.length)];
+    response = (responses && responses.length ? responses[Math.floor(Math.random() * responses.length)] : fallback);
 
     const botMessage: ChatMessage = {
       id: Date.now().toString(),

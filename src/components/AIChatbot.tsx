@@ -14,6 +14,7 @@ export default function AIChatbot({ isDark }: AIChatbotProps) {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(true);
+  const [fullscreen, setFullscreen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
@@ -119,31 +120,32 @@ export default function AIChatbot({ isDark }: AIChatbotProps) {
       )}
 
       {isOpen && (
-        <div className={`fixed bottom-6 right-6 z-50 w-96 h-[600px] rounded-2xl shadow-2xl flex flex-col ${
-          isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white'
-        }`}>
+        <div
+          className={`fixed z-50 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl flex flex-col border border-gray-200 dark:border-gray-700 chatbot-float-box ${fullscreen ? 'chatbot-fullscreen' : ''}`}
+          style={fullscreen ? { bottom: 0, left: 0, right: 0, top: 0, width: '100vw', height: '100vh', maxWidth: '100vw', maxHeight: '100vh', borderRadius: 0 } : { bottom: 24, right: 24, width: 384, height: 600, maxWidth: '96vw', maxHeight: '80vh'} }
+        >
           <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                🤖
-              </div>
+              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">🤖</div>
               <div>
                 <h3 className="font-bold text-lg">RaastaFix AI Assistant</h3>
                 <p className="text-xs opacity-90">Ask me in English, I'll help you</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <button
-                onClick={toggleAutoSpeak}
-                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-                title={autoSpeak ? 'Turn off voice' : 'Turn on voice'}
-              >
+              {window.innerWidth <= 600 && (
+                <button
+                  onClick={() => setFullscreen(v => !v)}
+                  title={fullscreen ? 'Minimize' : 'Fullscreen'}
+                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                >
+                  {fullscreen ? <span role="img" aria-label="minimize">🔳</span> : <span role="img" aria-label="expand">🔲</span>}
+                </button>
+              )}
+              <button onClick={toggleAutoSpeak} className="p-2 hover:bg-white/20 rounded-lg transition-colors" title={autoSpeak ? 'Turn off voice' : 'Turn on voice'}>
                 {autoSpeak ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
               </button>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-              >
+              <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -229,6 +231,40 @@ export default function AIChatbot({ isDark }: AIChatbotProps) {
           </div>
         </div>
       )}
+      {/* Add responsive inline style for mobile. If not using a CSS file, use a <style> tag here for quick fix. */}
+      <style>
+        {`
+          @media (max-width: 600px) {
+            .chatbot-float-box {
+              bottom: 0 !important;
+              right: 0 !important;
+              left: 0 !important;
+              width: 100vw !important;
+              max-width: 100vw !important;
+              height: 80vh !important;
+              max-height: 100vh !important;
+              border-radius: 0 !important;
+            }
+            .chatbot-fullscreen {
+              position: fixed !important;
+              top: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
+              bottom: 0 !important;
+              width: 100vw !important;
+              height: 100vh !important;
+              max-width: 100vw !important;
+              max-height: 100vh !important;
+              border-radius: 0 !important;
+              z-index: 99999 !important;
+            }
+            .chatbot-float-box input, .chatbot-float-box button {
+              font-size: 1.1em !important;
+              min-height: 48px !important;
+            }
+          }
+        `}
+      </style>
     </>
   );
 }
